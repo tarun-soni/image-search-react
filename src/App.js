@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './assets/main.css'
 import Nav from './components/Nav';
 import ImageCard from './components/ImageCard'
+import ImageInput from './components/ImageInput';
 
 function App() {
   const [images, setImages] = useState([]);
   const [term, setTerm] = useState('dog');
   const [isloading, setIsLoading] = useState(true);
-  //method 1
-  /* useEffect(() => {
 
+  //method 1
+  /*
+   useEffect(() => {
     async function fetchData() {
       const API_KEY = process.env.REACT_APP_API_KEY
       const url = `https://pixabay.com/api/?key=${API_KEY}&q=${term}&image_type=photo&pretty=true`
@@ -26,14 +28,15 @@ function App() {
       }
     }
   }, [])
-*/
 
+*/
   //method 2
+
   useEffect(() => {
     const url = `https://pixabay.com/api/?key=${process.env.REACT_APP_API_KEY}&q=${term}&image_type=photo&pretty=true`
 
-   fetch(url) 
-    .then(res => res.json())
+    fetch(url)
+      .then(res => res.json())
       .then(data => {
         setImages(data.hits);
         console.log(data.hits);
@@ -45,13 +48,17 @@ function App() {
   return (
     <div className="container mx-auto mt-10">
 
-      <div className="grid grid-cols-3 gap-4">
-        {images.map(image => (
+      <ImageInput searchText={(text) => setTerm(text)} />
+      {isloading ? <h1 className="text-6xl text-center mx-auto mt-32">Loading . . . </h1> :
+        <div className="grid grid-cols-3 gap-4">
 
-          <ImageCard key={image.id} image={image} />
-        ))}
+          {images.map(image => (
 
-      </div>
+            <ImageCard key={image.id} image={image} />
+          ))}
+
+        </div>
+      }
     </div>
   );
 }
