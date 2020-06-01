@@ -6,31 +6,8 @@ import ImageInput from './components/ImageInput';
 
 function App() {
   const [images, setImages] = useState([]);
-  const [term, setTerm] = useState('dog');
+  const [term, setTerm] = useState('');
   const [isloading, setIsLoading] = useState(true);
-
-  //method 1
-  /*
-   useEffect(() => {
-    async function fetchData() {
-      const API_KEY = process.env.REACT_APP_API_KEY
-      const url = `https://pixabay.com/api/?key=${API_KEY}&q=${term}&image_type=photo&pretty=true`
-
-      try {
-        const response = await fetch(url)
-        const data = await response.json()
-
-        setImages(data.hits)
-        console.log('images', images);
-      } catch (e) {
-
-        console.error('error is', e);
-      }
-    }
-  }, [])
-
-*/
-  //method 2
 
   useEffect(() => {
     const url = `https://pixabay.com/api/?key=${process.env.REACT_APP_API_KEY}&q=${term}&image_type=photo&pretty=true`
@@ -43,22 +20,29 @@ function App() {
         setIsLoading(false);
       })
       .catch(error => console.error(error))
-  }, []);
+
+  }, [term]);
 
   return (
     <div className="container mx-auto mt-10">
-
+     
       <ImageInput searchText={(text) => setTerm(text)} />
-      {isloading ? <h1 className="text-6xl text-center mx-auto mt-32">Loading . . . </h1> :
-        <div className="grid grid-cols-3 gap-4">
-
-          {images.map(image => (
-
-            <ImageCard key={image.id} image={image} />
-          ))}
-
-        </div>
+      {
+        !isloading && images.length === 0 && <h1 className="text-5xl text-center mx-auto mt-32">No images found </h1>
       }
+      {
+        isloading ? <h1 className="text-6xl text-center mx-auto mt-32">Loading . . . </h1> :
+
+          <div className="grid grid-cols-3 gap-4">
+
+            {images.map(image => (
+
+              <ImageCard key={image.id} image={image} />
+            ))}
+
+          </div>
+      }
+    
     </div>
   );
 }
